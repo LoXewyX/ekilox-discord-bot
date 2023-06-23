@@ -1,10 +1,18 @@
-import { client } from "./bot";
+import express from "express";
+import serverless from "serverless-http";
 import { createApiRest } from "./api-rest";
+import { client } from "./bot";
 
-const HOST = "http://localhost";
-const PORT = process.env.port || 8000;
+const app = express();
 
+// Create the API routes
 const api = createApiRest(client);
-api.listen(PORT, () => {
-  console.log(`⚡[rest-api]: Now running on port ${HOST}:${PORT}⚡`);
-});
+app.use("/api", api);
+
+// Define additional routes or middleware as needed
+
+// Create the serverless handler
+const handler = serverless(app);
+
+// Export the handler for serverless deployment
+export { handler };
