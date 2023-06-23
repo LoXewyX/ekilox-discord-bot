@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
+    "build:render": "npm i && rimraf ./build && tsc",
     "start": "node build/index.js",
     "dev": "concurrently \"tsc -w\" \"node build/index.js\"",
     "deploy:cmd": "tsc && node build/cmd.js"
@@ -24,6 +25,7 @@
     "express": "^4.18.2",
     "firebase": "^9.22.2",
     "netlify-cli": "^15.6.0",
+    "rimraf": "^5.0.1",
     "serverless-http": "^3.2.0"
   }
 }
