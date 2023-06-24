@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "start": "node build/index.js",
-    "dev": "concurrently \"tsc -w\" \"node build/index.js\"",
-    "deploy:cmd": "tsc && node build/cmd.js"
+    "dev": "concurrently \"npx tsc -w\" \"node build/index.js\"",
+    "deploy:cmd": "npx tsc && node build/cmd.js"
   },
   "keywords": [],
   "author": "",
