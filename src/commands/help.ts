@@ -34,8 +34,7 @@ import {
           ?.value
       );
       const user = interaction.user;
-      thread.send(`**User: <@${user.id}>**
-  **Problem**: ${problemDescription}`);
+      thread.send(`**User: <@${user.id}>**\**Problem**: ${problemDescription}`);
   
       await createTicket(thread.id, problemDescription);
   

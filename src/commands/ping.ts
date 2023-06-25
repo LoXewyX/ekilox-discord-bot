@@ -6,8 +6,8 @@ const data = new SlashCommandBuilder()
 
 async function execute(interaction: CommandInteraction) {
   try {
-    const botUser = interaction.client.user;
-    await interaction.reply(`Hi <@${botUser?.id}>!`);
+    const user = interaction.user;
+    await interaction.reply(`Hi <@${user?.id}>!`);
   } catch (error) {
     console.error("Error executing 'ping' command:", error);
     await interaction.reply("An error occurred while executing the command.");
