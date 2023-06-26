@@ -41,10 +41,12 @@ export function createApiRest(client: Client) {
       return res.status(200).send("Message was sent");
     } catch (error) {
       console.error("Error sending message:", error);
-      return res.status(500).send("An error occurred while sending the message");
+      return res
+        .status(500)
+        .send("An error occurred while sending the message");
     }
   });
-  
+
   // DELETE on endpoint - /message
   app.delete("/message", async (req: Request, res: Response) => {
     const { threadId } = req.body;
@@ -58,11 +60,20 @@ export function createApiRest(client: Client) {
         return res.status(404).send("Thread was not found");
       }
 
+      const message = await thread.messages.fetch(threadId);
+      if (!message) {
+        return res.status(404).send("Message was not found");
+      }
+
+      await message.delete();
+
       await thread.delete(threadId);
       return res.status(200).send("Message was deleted");
     } catch (error) {
       console.error("Error deleting message:", error);
-      return res.status(500).send("An error occurred while deleting the message");
+      return res
+        .status(500)
+        .send("An error occurred while deleting the message");
     }
   });
 
@@ -77,12 +88,16 @@ export function createApiRest(client: Client) {
         return res.status(404).send("Thread was not found");
       }
 
-      await thread.send("This conversation is marked as resolved and will be archived");
+      await thread.send(
+        "This conversation is marked as resolved and will be archived"
+      );
       await thread.setArchived(true);
       return res.status(200).send("Thread was resolved");
     } catch (error) {
       console.error("Error resolving thread:", error);
-      return res.status(500).send("An error occurred while resolving the thread");
+      return res
+        .status(500)
+        .send("An error occurred while resolving the thread");
     }
   });
 
