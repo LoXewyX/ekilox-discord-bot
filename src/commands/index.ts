@@ -1,2 +1,2 @@
-export * as ping from "./ping";
-export * as help from "./ticket";
+export * as hi from "./hi";
+export * as ticket from "./ticket";

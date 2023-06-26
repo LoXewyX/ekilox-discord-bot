@@ -29,15 +29,16 @@ function execute(interaction, client) {
             const channel = yield client.channels.fetch(interaction.channelId);
             if (!channel || channel.type !== discord_js_1.ChannelType.GuildText)
                 return;
+            const threadId = Date.now();
             const thread = yield channel.threads.create({
-                name: `support-${Date.now()}`,
-                reason: `Support ticket ${Date.now()}`,
+                name: `support-${threadId}`,
+                reason: `Support ticket ${threadId}`,
             });
             const problemDescription = String((_a = interaction.options.data.find((option) => option.name === "description")) === null || _a === void 0 ? void 0 : _a.value);
             const user = interaction.user;
-            thread.send(`**User: <@${user.id}>**\**Problem**: ${problemDescription}`);
+            thread.send(`**User: <@${user.id}>**\n**Problem**: ${problemDescription}`);
             yield (0, firebase_1.createTicket)(thread.id, problemDescription);
-            yield interaction.reply("Ticket is on the way");
+            yield interaction.reply(`Thread ${threadId} was opened for user ${user.id}`);
         }
         catch (error) {
             console.error("Error executing 'ticket' command:", error);

@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = exports.data = void 0;
 const discord_js_1 = require("discord.js");
 const data = new discord_js_1.SlashCommandBuilder()
-    .setName("ping")
-    .setDescription("Replies to the user.");
+    .setName("hi")
+    .setDescription("Replies you with your name.");
 exports.data = data;
 function execute(interaction) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -22,7 +22,7 @@ function execute(interaction) {
             yield interaction.reply(`Hi <@${user === null || user === void 0 ? void 0 : user.id}>!`);
         }
         catch (error) {
-            console.error("Error executing 'ping' command:", error);
+            console.error("Error executing 'hi' command:", error);
             yield interaction.reply("An error occurred while executing the command.");
         }
     });

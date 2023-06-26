@@ -24,9 +24,11 @@ import {
       const channel = await client.channels.fetch(interaction.channelId);
       if (!channel || channel.type !== ChannelType.GuildText) return;
   
+      const threadId = Date.now();
+
       const thread = await (channel as TextChannel).threads.create({
-        name: `support-${Date.now()}`,
-        reason: `Support ticket ${Date.now()}`,
+        name: `support-${threadId}`,
+        reason: `Support ticket ${threadId}`,
       });
   
       const problemDescription = String(
@@ -34,11 +36,11 @@ import {
           ?.value
       );
       const user = interaction.user;
-      thread.send(`**User: <@${user.id}>**\**Problem**: ${problemDescription}`);
+      thread.send(`**User: <@${user.id}>**\n**Problem**: ${problemDescription}`);
   
       await createTicket(thread.id, problemDescription);
-  
-      await interaction.reply("Ticket is on the way");
+      
+      await interaction.reply(`Thread ${threadId} was opened for user ${user.id}`);
     } catch (error) {
       console.error("Error executing 'ticket' command:", error);
       await interaction.reply("An error occurred while executing the command.");

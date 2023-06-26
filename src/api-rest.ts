@@ -5,8 +5,8 @@ export function createApiRest(client: Client) {
   const app = express();
   app.use(express.json());
 
-  // GET on endpoint - /messages
-  app.get("/messages", async (req: Request, res: Response) => {
+  // GET on endpoint - /message
+  app.get("/message", async (req: Request, res: Response) => {
     const { threadId } = req.query;
     if (!threadId) return res.status(400).send("Missing threadId");
 
@@ -24,8 +24,8 @@ export function createApiRest(client: Client) {
     }
   });
 
-  // POST on endpoint - /messages
-  app.post("/messages", async (req: Request, res: Response) => {
+  // POST on endpoint - /message
+  app.post("/message", async (req: Request, res: Response) => {
     const { threadId, text } = req.body;
     if (!threadId || !text) {
       return res.status(400).send("Missing threadId or text");
@@ -42,6 +42,27 @@ export function createApiRest(client: Client) {
     } catch (error) {
       console.error("Error sending message:", error);
       return res.status(500).send("An error occurred while sending the message");
+    }
+  });
+  
+  // DELETE on endpoint - /message
+  app.delete("/message", async (req: Request, res: Response) => {
+    const { threadId } = req.body;
+    if (!threadId) {
+      return res.status(400).send("Missing threadId");
+    }
+
+    try {
+      const thread = await client.channels.fetch(threadId as string);
+      if (!thread || !(thread instanceof ThreadChannel)) {
+        return res.status(404).send("Thread was not found");
+      }
+
+      await thread.delete(threadId);
+      return res.status(200).send("Message was deleted");
+    } catch (error) {
+      console.error("Error deleting message:", error);
+      return res.status(500).send("An error occurred while deleting the message");
     }
   });
 

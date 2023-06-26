@@ -41,11 +41,9 @@ const commands = __importStar(require("./commands"));
 const rest = new discord_js_1.REST({ version: "10" }).setToken(config_1.default.DISCORD_TOKEN);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("Started refreshing application (/) commands.");
         yield rest.put(discord_js_1.Routes.applicationGuildCommands(config_1.default.CLIENT_ID, config_1.default.GUILD_ID), { body: Object.values(commands).map((command) => command.data.toJSON()) });
-        console.log("Successfully reloaded application (/) commands.");
     }
     catch (error) {
-        console.error("Error refreshing application (/) commands:", error);
+        console.error(error);
     }
 }))();
