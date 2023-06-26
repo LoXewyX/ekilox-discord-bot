@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "concurrently \"npx tsc -w\" \"node build/cmd.js\" \"nodemon build/index.js\"",
+    "start": "concurrently \"npx tsc -w\" \"node build/cmd.js\" \"node build/index.js\"",
     "dev": "concurrently \"npx tsc -w\" \"node build/cmd.js\" \"nodemon src/index.ts\"",
     "dev:cmd": "npx tsc && node build/cmd.js"
   },

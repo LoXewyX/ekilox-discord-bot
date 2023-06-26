@@ -47,9 +47,8 @@ export function createApiRest(client: Client) {
     }
   });
   // DELETE on endpoint - /message/:messageId
-  app.delete("/message/:messageId", async (req: Request, res: Response) => {
-    const { threadId } = req.query;
-    const messageId = req.params.messageId;
+  app.delete("/message/:threadId", async (req: Request, res: Response) => {
+    const threadId = req.params.messageId;
 
     if (!threadId) {
       return res.status(400).send("Missing threadId");
@@ -61,7 +60,7 @@ export function createApiRest(client: Client) {
         return res.status(404).send("Thread was not found");
       }
 
-      const message = await thread.messages.fetch(messageId);
+      const message = await thread.messages.fetch(threadId);
       if (!message) {
         return res.status(404).send("Message was not found");
       }
