@@ -25,4 +25,4 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.help = exports.ping = void 0;
 exports.ping = __importStar(require("./ping"));
-exports.help = __importStar(require("./help"));
+exports.help = __importStar(require("./ticket"));

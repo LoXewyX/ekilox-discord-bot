@@ -18,8 +18,8 @@ exports.data = data;
 function execute(interaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const botUser = interaction.client.user;
-            yield interaction.reply(`Hi <@${botUser === null || botUser === void 0 ? void 0 : botUser.id}>!`);
+            const user = interaction.user;
+            yield interaction.reply(`Hi <@${user === null || user === void 0 ? void 0 : user.id}>!`);
         }
         catch (error) {
             console.error("Error executing 'ping' command:", error);

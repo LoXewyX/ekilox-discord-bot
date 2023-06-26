@@ -13,8 +13,8 @@ exports.execute = exports.data = void 0;
 const discord_js_1 = require("discord.js");
 const firebase_1 = require("../firebase");
 const data = new discord_js_1.SlashCommandBuilder()
-    .setName("help")
-    .setDescription("Creates a new help ticket.")
+    .setName("ticket")
+    .setDescription("Creates a new ticket.")
     .addStringOption((option) => option
     .setName("description")
     .setDescription("Describe your problem")
@@ -35,13 +35,12 @@ function execute(interaction, client) {
             });
             const problemDescription = String((_a = interaction.options.data.find((option) => option.name === "description")) === null || _a === void 0 ? void 0 : _a.value);
             const user = interaction.user;
-            thread.send(`**User: <@${user.id}>**
-  **Problem**: ${problemDescription}`);
+            thread.send(`**User: <@${user.id}>**\**Problem**: ${problemDescription}`);
             yield (0, firebase_1.createTicket)(thread.id, problemDescription);
-            yield interaction.reply("Help is on the way");
+            yield interaction.reply("Ticket is on the way");
         }
         catch (error) {
-            console.error("Error executing 'help' command:", error);
+            console.error("Error executing 'ticket' command:", error);
             yield interaction.reply("An error occurred while executing the command.");
         }
     });
