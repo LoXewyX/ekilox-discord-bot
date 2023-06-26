@@ -1,5 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { collection, getFirestore, addDoc } from "firebase/firestore/lite";
+import {
+  collection,
+  getFirestore,
+  addDoc,
+  doc,
+  deleteDoc,
+} from "firebase/firestore/lite";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCL1BhcmbnMcB-TUx9z-Ck3Yy4_ZqpBHfA",
@@ -22,5 +28,15 @@ export async function createTicket(threadId: string, text: string) {
     });
   } catch (e) {
     console.error(e);
+  }
+}
+
+export async function deleteTicket(threadId: string) {
+  try {
+    const ticketRef = doc(db, "tickets", threadId);
+    await deleteDoc(ticketRef);
+    console.log("Ticket deleted successfully!");
+  } catch (error) {
+    console.error("Error deleting ticket:", error);
   }
 }

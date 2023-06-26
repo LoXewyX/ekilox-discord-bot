@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTicket = void 0;
+exports.deleteTicket = exports.createTicket = void 0;
 const app_1 = require("firebase/app");
 const lite_1 = require("firebase/firestore/lite");
 const firebaseConfig = {
@@ -37,3 +37,16 @@ function createTicket(threadId, text) {
     });
 }
 exports.createTicket = createTicket;
+function deleteTicket(threadId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const ticketRef = (0, lite_1.doc)(db, "tickets", threadId);
+            yield (0, lite_1.deleteDoc)(ticketRef);
+            console.log("Ticket deleted successfully!");
+        }
+        catch (error) {
+            console.error("Error deleting ticket:", error);
+        }
+    });
+}
+exports.deleteTicket = deleteTicket;

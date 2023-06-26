@@ -1,5 +1,6 @@
 import { Client, ThreadChannel } from "discord.js";
 import express, { Request, Response } from "express";
+import { deleteTicket } from "./firebase";
 
 export function createApiRest(client: Client) {
   const app = express();
@@ -46,9 +47,10 @@ export function createApiRest(client: Client) {
         .send("An error occurred while sending the message");
     }
   });
-  // DELETE on endpoint - /message/:messageId
+
+  // DELETE on endpoint - /message/:threadId
   app.delete("/message/:threadId", async (req: Request, res: Response) => {
-    const threadId = req.params.messageId;
+    const { threadId } = req.params;
 
     if (!threadId) {
       return res.status(400).send("Missing threadId");
@@ -60,18 +62,24 @@ export function createApiRest(client: Client) {
         return res.status(404).send("Thread was not found");
       }
 
-      const message = await thread.messages.fetch(threadId);
-      if (!message) {
-        return res.status(404).send("Message was not found");
+      const messages = await thread.messages.fetch();
+      if (messages.size === 0) {
+        return res.status(404).send("No messages found in the thread");
       }
 
-      await message.delete();
-      return res.status(200).send("Message was deleted");
+      const messageIds = messages.map((message) => message.id);
+
+      await Promise.all([
+        ...messageIds.map((messageId) => thread.messages.delete(messageId)),
+        deleteTicket(threadId),
+      ]);
+
+      return res.status(200).send("Messages and ticket were deleted");
     } catch (error) {
-      console.error("Error deleting message:", error);
+      console.error("Error deleting messages and ticket:", error);
       return res
         .status(500)
-        .send("An error occurred while deleting the message");
+        .send("An error occurred while deleting messages and ticket");
     }
   });
 

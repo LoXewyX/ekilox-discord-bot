@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createApiRest = void 0;
 const discord_js_1 = require("discord.js");
 const express_1 = __importDefault(require("express"));
+const firebase_1 = require("./firebase");
 function createApiRest(client) {
     const app = (0, express_1.default)();
     app.use(express_1.default.json());
@@ -57,9 +58,9 @@ function createApiRest(client) {
                 .send("An error occurred while sending the message");
         }
     }));
-    // DELETE on endpoint - /message/:messageId
+    // DELETE on endpoint - /message/:threadId
     app.delete("/message/:threadId", (req, res) => __awaiter(this, void 0, void 0, function* () {
-        const threadId = req.params.messageId;
+        const { threadId } = req.params;
         if (!threadId) {
             return res.status(400).send("Missing threadId");
         }
@@ -68,18 +69,22 @@ function createApiRest(client) {
             if (!thread || !(thread instanceof discord_js_1.ThreadChannel)) {
                 return res.status(404).send("Thread was not found");
             }
-            const message = yield thread.messages.fetch(threadId);
-            if (!message) {
-                return res.status(404).send("Message was not found");
+            const messages = yield thread.messages.fetch();
+            if (messages.size === 0) {
+                return res.status(404).send("No messages found in the thread");
             }
-            yield message.delete();
-            return res.status(200).send("Message was deleted");
+            const messageIds = messages.map((message) => message.id);
+            yield Promise.all([
+                ...messageIds.map((messageId) => thread.messages.delete(messageId)),
+                (0, firebase_1.deleteTicket)(threadId),
+            ]);
+            return res.status(200).send("Messages and ticket were deleted");
         }
         catch (error) {
-            console.error("Error deleting message:", error);
+            console.error("Error deleting messages and ticket:", error);
             return res
                 .status(500)
-                .send("An error occurred while deleting the message");
+                .send("An error occurred while deleting messages and ticket");
         }
     }));
     // POST on endpoint - /resolve
