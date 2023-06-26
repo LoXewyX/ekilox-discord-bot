@@ -57,9 +57,10 @@ function createApiRest(client) {
                 .send("An error occurred while sending the message");
         }
     }));
-    // DELETE on endpoint - /message
-    app.delete("/message", (req, res) => __awaiter(this, void 0, void 0, function* () {
-        const { threadId } = req.body;
+    // DELETE on endpoint - /message/:messageId
+    app.delete("/message/:messageId", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const { threadId } = req.query;
+        const messageId = req.params.messageId;
         if (!threadId) {
             return res.status(400).send("Missing threadId");
         }
@@ -68,12 +69,11 @@ function createApiRest(client) {
             if (!thread || !(thread instanceof discord_js_1.ThreadChannel)) {
                 return res.status(404).send("Thread was not found");
             }
-            const message = yield thread.messages.fetch(threadId);
+            const message = yield thread.messages.fetch(messageId);
             if (!message) {
                 return res.status(404).send("Message was not found");
             }
             yield message.delete();
-            yield thread.delete(threadId);
             return res.status(200).send("Message was deleted");
         }
         catch (error) {
