@@ -8,8 +8,8 @@ import {
   import { createTicket } from "../firebase";
   
   const data = new SlashCommandBuilder()
-    .setName("help")
-    .setDescription("Creates a new help ticket.")
+    .setName("ticket")
+    .setDescription("Creates a new ticket.")
     .addStringOption((option) =>
       option
         .setName("description")
@@ -38,9 +38,9 @@ import {
   
       await createTicket(thread.id, problemDescription);
   
-      await interaction.reply("Help is on the way");
+      await interaction.reply("Ticket is on the way");
     } catch (error) {
-      console.error("Error executing 'help' command:", error);
+      console.error("Error executing 'ticket' command:", error);
       await interaction.reply("An error occurred while executing the command.");
     }
   }
