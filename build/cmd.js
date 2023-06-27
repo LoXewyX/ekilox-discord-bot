@@ -38,10 +38,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const config_1 = __importDefault(require("./config"));
 const commands = __importStar(require("./commands"));
-const rest = new discord_js_1.REST({ version: "10" }).setToken(config_1.default.DISCORD_TOKEN);
+const rest = new discord_js_1.REST({ version: "10" }).setToken(config_1.default.discord.DISCORD_TOKEN);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield rest.put(discord_js_1.Routes.applicationGuildCommands(config_1.default.CLIENT_ID, config_1.default.GUILD_ID), { body: Object.values(commands).map((command) => command.data.toJSON()) });
+        yield rest.put(discord_js_1.Routes.applicationGuildCommands(config_1.default.discord.CLIENT_ID, config_1.default.discord.GUILD_ID), { body: Object.values(commands).map((command) => command.data.toJSON()) });
     }
     catch (error) {
         console.error(error);

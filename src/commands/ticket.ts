@@ -5,7 +5,7 @@ import {
     TextChannel,
     ChannelType,
   } from "discord.js";
-  import { createTicket } from "../firebase";
+  import { createTicket } from "../db";
   
   const data = new SlashCommandBuilder()
     .setName("ticket")

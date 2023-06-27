@@ -56,4 +56,4 @@ exports.client.on("interactionCreate", (interaction) => __awaiter(void 0, void 0
     const { commandName } = interaction;
     commands[commandName].execute(interaction, exports.client);
 }));
-exports.client.login(config_1.default.DISCORD_TOKEN);
+exports.client.login(config_1.default.discord.DISCORD_TOKEN);

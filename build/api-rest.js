@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createApiRest = void 0;
 const discord_js_1 = require("discord.js");
 const express_1 = __importDefault(require("express"));
-const firebase_1 = require("./firebase");
+const db_1 = require("./db");
 function createApiRest(client) {
     const app = (0, express_1.default)();
     app.use(express_1.default.json());
@@ -65,26 +65,20 @@ function createApiRest(client) {
             return res.status(400).send("Missing threadId");
         }
         try {
+            yield (0, db_1.deleteTicket)(threadId);
             const thread = yield client.channels.fetch(threadId);
             if (!thread || !(thread instanceof discord_js_1.ThreadChannel)) {
                 return res.status(404).send("Thread was not found");
             }
-            const messages = yield thread.messages.fetch();
-            if (messages.size === 0) {
-                return res.status(404).send("No messages found in the thread");
-            }
-            const messageIds = messages.map((message) => message.id);
-            yield Promise.all([
-                ...messageIds.map((messageId) => thread.messages.delete(messageId)),
-                (0, firebase_1.deleteTicket)(threadId),
-            ]);
-            return res.status(200).send("Messages and ticket were deleted");
+            yield thread.delete();
+            console.log("Thread deleted successfully!");
+            return res.status(200).send("Ticket and thread were deleted");
         }
         catch (error) {
-            console.error("Error deleting messages and ticket:", error);
+            console.error("Error deleting ticket and thread:", error);
             return res
                 .status(500)
-                .send("An error occurred while deleting messages and ticket");
+                .send("An error occurred while deleting the ticket and thread");
         }
     }));
     // POST on endpoint - /resolve

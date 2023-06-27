@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = exports.data = void 0;
 const discord_js_1 = require("discord.js");
-const firebase_1 = require("../firebase");
+const db_1 = require("../db");
 const data = new discord_js_1.SlashCommandBuilder()
     .setName("ticket")
     .setDescription("Creates a new ticket.")
@@ -37,7 +37,7 @@ function execute(interaction, client) {
             const problemDescription = String((_a = interaction.options.data.find((option) => option.name === "description")) === null || _a === void 0 ? void 0 : _a.value);
             const user = interaction.user;
             thread.send(`**User: <@${user.id}>**\n**Problem**: ${problemDescription}`);
-            yield (0, firebase_1.createTicket)(thread.id, problemDescription);
+            yield (0, db_1.createTicket)(thread.id, problemDescription);
             yield interaction.reply(`Thread ${threadId} was opened for user ${user.id}`);
         }
         catch (error) {
