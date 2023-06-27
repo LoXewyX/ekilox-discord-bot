@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const { CLIENT_ID, GUILD_ID, DISCORD_TOKEN, MONGO_URI } = process.env;
-if (!CLIENT_ID || !GUILD_ID || !DISCORD_TOKEN)
+if (!CLIENT_ID || !GUILD_ID || !DISCORD_TOKEN || !MONGO_URI)
     throw new Error("Environment variables are missing.");
 const discord = {
     CLIENT_ID: CLIENT_ID,

@@ -4,7 +4,7 @@ dotenv.config();
 
 const { CLIENT_ID, GUILD_ID, DISCORD_TOKEN, MONGO_URI } = process.env;
 
-if (!CLIENT_ID || !GUILD_ID || !DISCORD_TOKEN)
+if (!CLIENT_ID || !GUILD_ID || !DISCORD_TOKEN || !MONGO_URI)
   throw new Error("Environment variables are missing.");
 
 const discord: Record<string, string> = {

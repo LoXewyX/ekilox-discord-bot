@@ -4,8 +4,11 @@ import { deleteTicket } from "./db";
 
 export function createApiRest(client: Client) {
   const app = express();
-  app.use(express.json());
 
+  app.use(express.static('public'));
+  app.use('/public', express.static(__dirname + '/public'));
+
+  /* START Thread */
   // GET on endpoint - /message
   app.get("/message", async (req: Request, res: Response) => {
     const { threadId } = req.query;
@@ -51,21 +54,21 @@ export function createApiRest(client: Client) {
   // DELETE on endpoint - /message/:threadId
   app.delete("/message/:threadId", async (req: Request, res: Response) => {
     const { threadId } = req.params;
-  
+
     if (!threadId) {
       return res.status(400).send("Missing threadId");
     }
-  
+
     try {
       await deleteTicket(threadId);
-  
+
       const thread = await client.channels.fetch(threadId);
       if (!thread || !(thread instanceof ThreadChannel)) {
         return res.status(404).send("Thread was not found");
       }
       await thread.delete();
       console.log("Thread deleted successfully!");
-  
+
       return res.status(200).send("Ticket and thread were deleted");
     } catch (error) {
       console.error("Error deleting ticket and thread:", error);
@@ -98,6 +101,11 @@ export function createApiRest(client: Client) {
         .send("An error occurred while resolving the thread");
     }
   });
+  /* END Thread */
+
+  /* START Web scrapping */
+  
+  /* END Web scrapping */
 
   return app;
 }

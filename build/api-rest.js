@@ -18,7 +18,9 @@ const express_1 = __importDefault(require("express"));
 const db_1 = require("./db");
 function createApiRest(client) {
     const app = (0, express_1.default)();
-    app.use(express_1.default.json());
+    app.use(express_1.default.static('public'));
+    app.use('/public', express_1.default.static(__dirname + '/public'));
+    /* START Thread */
     // GET on endpoint - /message
     app.get("/message", (req, res) => __awaiter(this, void 0, void 0, function* () {
         const { threadId } = req.query;
@@ -102,6 +104,9 @@ function createApiRest(client) {
                 .send("An error occurred while resolving the thread");
         }
     }));
+    /* END Thread */
+    /* START Web scrapping */
+    /* END Web scrapping */
     return app;
 }
 exports.createApiRest = createApiRest;

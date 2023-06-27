@@ -15,16 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTicket = exports.createTicket = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("./config"));
-console.log(config_1.default.mongodb.MONGO_URI);
+/* START Pool connection */
 mongoose_1.default
     .connect(config_1.default.mongodb.MONGO_URI, {
     dbName: 'ekilox-discord'
 })
     .then(() => {
-    console.log("[ekilox-db] Connected to MongoDB Atlas ⚡");
+    console.log("[ekilox-db]\t\tConnected to MongoDB Atlas ⚡");
 })
     .catch((error) => {
-    console.error("[ekilox-db] MongoDB Atlas connection error 🚫:", error);
+    console.error("[ekilox-db]\t\tMongoDB Atlas connection error ❌:", error);
 });
 // Define a Mongoose schema for the ticket
 const ticketSchema = new mongoose_1.default.Schema({
@@ -32,6 +32,8 @@ const ticketSchema = new mongoose_1.default.Schema({
     text: String,
     openedAt: Date,
 });
+/* END Pool connection */
+/* START Tickets */
 // Create a Mongoose model for the ticket
 const Ticket = mongoose_1.default.model("Ticket", ticketSchema);
 // Create a ticket
@@ -70,3 +72,4 @@ function deleteTicket(threadId) {
     });
 }
 exports.deleteTicket = deleteTicket;
+/* END Tickets */ 

@@ -13,7 +13,7 @@ export const client = new Client({
 });
 
 client.once("ready", () => {
-  console.log("[ekilox-cmd] Ekilox bot running! ⚡");
+  console.log("[ekilox-cmd]\tEkilox bot running! ⚡");
 });
 
 client.on("interactionCreate", async (interaction) => {

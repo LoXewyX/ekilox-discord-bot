@@ -48,7 +48,7 @@ exports.client = new discord_js_1.Client({
     ],
 });
 exports.client.once("ready", () => {
-    console.log("[ekilox-cmd] Ekilox bot running! ⚡");
+    console.log("[ekilox-cmd]\tEkilox bot running! ⚡");
 });
 exports.client.on("interactionCreate", (interaction) => __awaiter(void 0, void 0, void 0, function* () {
     if (!interaction.isCommand())

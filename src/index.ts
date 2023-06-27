@@ -5,5 +5,5 @@ const api = createApiRest(client);
 const port = process.env.PORT || 3000;
 
 api.listen(port, () => {
-  console.log(`[ekilox-api] Server is running on port ${port} ⚡`);
+  console.log(`[ekilox-api]\tServer is running on port ${port} ⚡`);
 });
