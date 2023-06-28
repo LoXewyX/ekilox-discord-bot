@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = exports.data = void 0;
 const discord_js_1 = require("discord.js");
 const voice_1 = require("@discordjs/voice");
-const stream_1 = require("stream");
 const data = new discord_js_1.SlashCommandBuilder()
     .setName("music")
     .setDescription("Joins the music channel and plays music.")
@@ -32,18 +31,41 @@ function execute(interaction) {
                         yield interaction.reply("Please provide a valid voice channel.");
                         return;
                     }
+                    const player = (0, voice_1.createAudioPlayer)();
+                    player.on(voice_1.AudioPlayerStatus.Playing, () => {
+                        console.log("The audio player has started playing!");
+                    });
+                    player.on(voice_1.AudioPlayerStatus.Idle, () => {
+                        console.log("The audio player has stopped playing!");
+                    });
+                    player.on("error", (error) => {
+                        console.error(`Error: ${error.message}`);
+                    });
                     const connection = (0, voice_1.joinVoiceChannel)({
                         channelId: voiceChannel.id,
                         guildId: interaction.guildId,
                         adapterCreator: interaction.guild.voiceAdapterCreator,
                     });
-                    const player = (0, voice_1.createAudioPlayer)();
-                    connection.subscribe(player);
-                    const audioUrl = "localhost:3000/public/freedom.mp3";
-                    const stream = yield getReadableStreamFromUrl(audioUrl);
-                    const resource = (0, voice_1.createAudioResource)(stream);
+                    const resource = (0, voice_1.createAudioResource)("D:\\Documents\\GitHub\\Ekilox-discord-bot\\src\\public\\Imaginary.mp3", { inlineVolume: true });
+                    resource.volume.setVolume(1);
+                    yield interaction.reply("Streaming on voice channel `" + voiceChannel.name + "`");
+                    // Subscribe the connection to the audio player (will play audio on the voice connection)
+                    const subscription = connection.subscribe(player);
                     player.play(resource);
-                    yield interaction.reply("Playing audio in the voice channel.");
+                    // subscription could be undefined if the connection is destroyed!
+                    if (subscription) {
+                        // Unsubscribe when the audio finishes playing
+                        player.on(voice_1.AudioPlayerStatus.Idle, () => {
+                            subscription.unsubscribe();
+                            console.log("Unsubscribed from the voice connection.");
+                        });
+                        // Handle any errors that occur during playback
+                        player.on("error", (error) => {
+                            console.error(`Error: ${error.message}`);
+                            subscription.unsubscribe();
+                            console.log("Unsubscribed from the voice connection due to an error.");
+                        });
+                    }
                 }
             }
         }
@@ -54,18 +76,3 @@ function execute(interaction) {
     });
 }
 exports.execute = execute;
-function getReadableStreamFromUrl(url) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve, reject) => {
-            https.get(url, (response) => {
-                if (response.statusCode !== 200) {
-                    reject(new Error(`Request failed with status code ${response.statusCode}`));
-                    return;
-                }
-                const stream = response.pipe(new stream_1.PassThrough());
-                resolve(stream);
-            })
-                .on("error", reject);
-        });
-    });
-}

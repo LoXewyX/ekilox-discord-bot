@@ -1,79 +1,94 @@
 import {
-    ChannelType,
-    CommandInteraction,
-    SlashCommandBuilder,
-  } from "discord.js";
-  import {
-    createAudioPlayer,
-    createAudioResource,
-    joinVoiceChannel,
-  } from "@discordjs/voice";
-  import http from "http";
-  import { PassThrough, Readable } from "stream";
-  
-  const data = new SlashCommandBuilder()
-    .setName("music")
-    .setDescription("Joins the music channel and plays music.")
-    .addChannelOption((option) =>
-      option
-        .setName("channel")
-        .setDescription("Select the audio channel.")
-        .setRequired(true)
-        .addChannelTypes(ChannelType.GuildVoice)
-    );
-  
-  async function execute(interaction: CommandInteraction) {
-    try {
-      if (interaction.isCommand()) {
-        if (interaction.commandName === "music") {
-          const voiceChannel = interaction.options.get("channel")!.channel;
-  
-          if (!voiceChannel) {
-            await interaction.reply("Please provide a valid voice channel.");
-            return;
-          }
-  
-          const connection = joinVoiceChannel({
-            channelId: voiceChannel.id,
-            guildId: interaction.guildId!,
-            adapterCreator: interaction.guild!.voiceAdapterCreator,
-          });
-  
-          const player = createAudioPlayer();
-  
-          connection.subscribe(player);
-  
-          const audioUrl = "localhost:3000/public/freedom.mp3";
-  
-          const stream = await getReadableStreamFromUrl(audioUrl);
-  
-          const resource = createAudioResource(stream);
-  
-          player.play(resource);
-  
-          await interaction.reply("Playing audio in the voice channel.");
-        }
-      }
-    } catch (error) {
-      console.error("Error executing 'music' command:", error);
-      await interaction.reply("An error occurred while executing the command.");
-    }
-  }
-  
-  async function getReadableStreamFromUrl(url: string): Promise<Readable> {
-    return new Promise<Readable>((resolve, reject) => {
-      https.get(url, (response) => {
-        if (response.statusCode !== 200) {
-          reject(new Error(`Request failed with status code ${response.statusCode}`));
+  ChannelType,
+  CommandInteraction,
+  SlashCommandBuilder,
+} from "discord.js";
+import {
+  AudioPlayerStatus,
+  createAudioPlayer,
+  createAudioResource,
+  joinVoiceChannel,
+} from "@discordjs/voice";
+
+const data = new SlashCommandBuilder()
+  .setName("music")
+  .setDescription("Joins the music channel and plays music.")
+  .addChannelOption((option) =>
+    option
+      .setName("channel")
+      .setDescription("Select the audio channel.")
+      .setRequired(true)
+      .addChannelTypes(ChannelType.GuildVoice)
+  );
+
+async function execute(interaction: CommandInteraction) {
+  try {
+    if (interaction.isCommand()) {
+      if (interaction.commandName === "music") {
+        const voiceChannel = interaction.options.get("channel")!.channel;
+
+        if (!voiceChannel) {
+          await interaction.reply("Please provide a valid voice channel.");
           return;
         }
-  
-        const stream = response.pipe(new PassThrough());
-        resolve(stream);
-      })
-      .on("error", reject);
-    });
+
+        const player = createAudioPlayer();
+
+        player.on(AudioPlayerStatus.Playing, () => {
+          console.log("The audio player has started playing!");
+        });
+
+        player.on(AudioPlayerStatus.Idle, () => {
+          console.log("The audio player has stopped playing!");
+        });
+
+        player.on("error", (error) => {
+          console.error(`Error: ${error.message}`);
+        });
+
+        const connection = joinVoiceChannel({
+          channelId: voiceChannel.id,
+          guildId: interaction.guildId!,
+          adapterCreator: interaction.guild!.voiceAdapterCreator,
+        });
+
+        const resource = createAudioResource(
+          "D:\\Documents\\GitHub\\Ekilox-discord-bot\\src\\public\\Imaginary.mp3",
+          { inlineVolume: true }
+        );
+        resource.volume!.setVolume(1);
+
+        await interaction.reply(
+          "Streaming on voice channel `" + voiceChannel.name + "`"
+        );
+
+        // Subscribe the connection to the audio player (will play audio on the voice connection)
+        const subscription = connection.subscribe(player);
+        player.play(resource);
+
+        // subscription could be undefined if the connection is destroyed!
+        if (subscription) {
+          // Unsubscribe when the audio finishes playing
+          player.on(AudioPlayerStatus.Idle, () => {
+            subscription.unsubscribe();
+            console.log("Unsubscribed from the voice connection.");
+          });
+
+          // Handle any errors that occur during playback
+          player.on("error", (error) => {
+            console.error(`Error: ${error.message}`);
+            subscription.unsubscribe();
+            console.log(
+              "Unsubscribed from the voice connection due to an error."
+            );
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error executing 'music' command:", error);
+    await interaction.reply("An error occurred while executing the command.");
   }
-  
-  export { data, execute };
-  
+}
+
+export { data, execute };

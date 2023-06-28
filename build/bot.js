@@ -45,6 +45,7 @@ exports.client = new discord_js_1.Client({
         discord_js_1.GatewayIntentBits.Guilds,
         discord_js_1.GatewayIntentBits.GuildMessages,
         discord_js_1.GatewayIntentBits.DirectMessages,
+        discord_js_1.GatewayIntentBits.GuildVoiceStates
     ],
 });
 exports.client.once("ready", () => {

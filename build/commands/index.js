@@ -23,7 +23,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.music = exports.ticket = exports.hi = void 0;
+exports.nuke = exports.music = exports.ticket = exports.hi = void 0;
 exports.hi = __importStar(require("./hi"));
 exports.ticket = __importStar(require("./ticket"));
 exports.music = __importStar(require("./music"));
+exports.nuke = __importStar(require("./nuke"));
