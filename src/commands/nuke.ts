@@ -34,15 +34,13 @@ async function execute(interaction: CommandInteraction) {
     if (interaction.isCommand() && interaction.commandName === "nuke") {
       const channel = interaction.options.get("channel")!
         .channel as TextChannel;
-        
-        
-        if (!channel || channel.type !== ChannelType.GuildText) {
-            await interaction.reply("Please provide a valid text channel.");
-            return;
-        }
-        
-        const amount = interaction.options.get("amount")!.value as number;
-        console.log(amount);
+
+      if (!channel || channel.type !== ChannelType.GuildText) {
+        await interaction.reply("Please provide a valid text channel.");
+        return;
+      }
+
+      const amount = interaction.options.get("amount")!.value as number;
 
       if (amount && (amount < 0 || amount > 100)) {
         await interaction.reply(
@@ -61,7 +59,10 @@ async function execute(interaction: CommandInteraction) {
       const filteredMessages = messages.filter((msg) => !msg.pinned);
 
       await channel.bulkDelete(filteredMessages);
-      await interaction.reply({ content: `Successfully deleted ${filteredMessages.size} messages.`, ephemeral: true });
+      await interaction.reply({
+        content: `Successfully deleted ${filteredMessages.size} messages.`,
+        ephemeral: true,
+      });
     }
   } catch (error) {
     console.error("Error executing 'nuke' command:", error);

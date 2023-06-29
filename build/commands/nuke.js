@@ -35,7 +35,6 @@ function execute(interaction) {
                     return;
                 }
                 const amount = interaction.options.get("amount").value;
-                console.log(amount);
                 if (amount && (amount < 0 || amount > 100)) {
                     yield interaction.reply("Please provide a valid amount between 0 and 100.");
                     return;
@@ -49,7 +48,10 @@ function execute(interaction) {
                 }
                 const filteredMessages = messages.filter((msg) => !msg.pinned);
                 yield channel.bulkDelete(filteredMessages);
-                yield interaction.reply({ content: `Successfully deleted ${filteredMessages.size} messages.`, ephemeral: true });
+                yield interaction.reply({
+                    content: `Successfully deleted ${filteredMessages.size} messages.`,
+                    ephemeral: true,
+                });
             }
         }
         catch (error) {

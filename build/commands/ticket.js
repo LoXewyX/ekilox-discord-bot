@@ -14,7 +14,7 @@ const discord_js_1 = require("discord.js");
 const db_1 = require("../db");
 const data = new discord_js_1.SlashCommandBuilder()
     .setName("ticket")
-    .setDescription("Creates a new ticket.")
+    .setDescription("Creates an incident ticket.")
     .addStringOption((option) => option
     .setName("description")
     .setDescription("Describe your problem")

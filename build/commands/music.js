@@ -46,7 +46,7 @@ function execute(interaction) {
                         guildId: interaction.guildId,
                         adapterCreator: interaction.guild.voiceAdapterCreator,
                     });
-                    const resource = (0, voice_1.createAudioResource)("D:\\Documents\\GitHub\\Ekilox-discord-bot\\src\\public\\Imaginary.mp3", { inlineVolume: true });
+                    const resource = (0, voice_1.createAudioResource)("D:\\Documents\\GitHub\\Ekilox-discord-bot\\src\\public\\Jeremy Blake - Through The Crystal.mp3", { inlineVolume: true });
                     resource.volume.setVolume(1);
                     yield interaction.reply("Streaming on voice channel `" + voiceChannel.name + "`");
                     // Subscribe the connection to the audio player (will play audio on the voice connection)
@@ -57,6 +57,7 @@ function execute(interaction) {
                         // Unsubscribe when the audio finishes playing
                         player.on(voice_1.AudioPlayerStatus.Idle, () => {
                             subscription.unsubscribe();
+                            connection.disconnect();
                             console.log("Unsubscribed from the voice connection.");
                         });
                         // Handle any errors that occur during playback

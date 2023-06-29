@@ -9,7 +9,7 @@ import {
   
   const data = new SlashCommandBuilder()
     .setName("ticket")
-    .setDescription("Creates a new ticket.")
+    .setDescription("Creates an incident ticket.")
     .addStringOption((option) =>
       option
         .setName("description")

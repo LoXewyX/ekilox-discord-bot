@@ -53,7 +53,7 @@ async function execute(interaction: CommandInteraction) {
         });
 
         const resource = createAudioResource(
-          "D:\\Documents\\GitHub\\Ekilox-discord-bot\\src\\public\\Imaginary.mp3",
+          "D:\\Documents\\GitHub\\Ekilox-discord-bot\\src\\public\\Jeremy Blake - Through The Crystal.mp3",
           { inlineVolume: true }
         );
         resource.volume!.setVolume(1);
@@ -71,6 +71,7 @@ async function execute(interaction: CommandInteraction) {
           // Unsubscribe when the audio finishes playing
           player.on(AudioPlayerStatus.Idle, () => {
             subscription.unsubscribe();
+            connection.disconnect();
             console.log("Unsubscribed from the voice connection.");
           });
 
