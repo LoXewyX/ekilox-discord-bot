@@ -10,8 +10,8 @@ export function createApiRest(client: Client) {
 
   /* START Thread */
   // GET on endpoint - /message
-  app.get("/message", async (req: Request, res: Response) => {
-    const { threadId } = req.query;
+  app.get("/message/:threadId", async (req: Request, res: Response) => {
+    const { threadId } = req.params;
     if (!threadId) return res.status(400).send("Missing threadId");
 
     try {

@@ -22,8 +22,8 @@ function createApiRest(client) {
     app.use('/public', express_1.default.static(__dirname + '/public'));
     /* START Thread */
     // GET on endpoint - /message
-    app.get("/message", (req, res) => __awaiter(this, void 0, void 0, function* () {
-        const { threadId } = req.query;
+    app.get("/message/:threadId", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const { threadId } = req.params;
         if (!threadId)
             return res.status(400).send("Missing threadId");
         try {
