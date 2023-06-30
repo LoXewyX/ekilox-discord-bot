@@ -2,7 +2,7 @@ import {
   ActivityType,
   CommandInteraction,
   SlashCommandBuilder,
-  EmbedBuilder
+  EmbedBuilder,
 } from "discord.js";
 
 const data = new SlashCommandBuilder()
@@ -19,30 +19,26 @@ async function execute(interaction: CommandInteraction) {
 
     const id = user.id;
     const name = user.username;
-    const guildStatus = member ? "Member" : "Not a member";
     const roles = member
       ? member.roles.cache.map((role) => role.name).join(", ")
       : "N/A";
     const memberSince = member ? member.joinedAt?.toLocaleDateString()! : "N/A";
     const presence = member?.presence;
-    const about =
-      presence?.activities?.find(
-        (activity) =>
-          activity.type === ActivityType.Custom ||
-          activity.type === ActivityType.Playing
-      )?.name || "N/A";
+    const status = presence?.status ?? "N/A";
 
-    const userData = `
-    **User Data**
-    ID: \`${id}\`
-    Name: ${name}
-    Guild Status: ${guildStatus}
-    About: ${about}
-    Roles: ${roles}
-    Member Since: ${memberSince}
-  `;
+    const embed = new EmbedBuilder()
+      .setTitle(name)
+      .setDescription("User description")
+      .setColor("#0099ff")
+      .setThumbnail(user.displayAvatarURL())
+      .addFields([
+        { name: "ID", value: id, inline: true },
+        { name: "Status", value: status, inline: true }, // TODO improve
+        { name: "Roles", value: roles, inline: true },
+        { name: "Member Since", value: memberSince, inline: true },
+      ]);
 
-    await interaction.reply(userData);
+    await interaction.reply({ embeds: [embed] });
   } catch (error) {
     console.error("Error executing 'id' command:", error);
     await interaction.reply("An error occurred while executing the command.");

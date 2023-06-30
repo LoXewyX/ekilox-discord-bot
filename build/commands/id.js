@@ -17,31 +17,31 @@ const data = new discord_js_1.SlashCommandBuilder()
     .addUserOption((option) => option.setName("user").setDescription("Select the user.").setRequired(true));
 exports.data = data;
 function execute(interaction) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const user = interaction.options.getUser("user");
             const member = (_a = interaction.guild) === null || _a === void 0 ? void 0 : _a.members.cache.get(user.id);
             const id = user.id;
             const name = user.username;
-            const guildStatus = member ? "Member" : "Not a member";
             const roles = member
                 ? member.roles.cache.map((role) => role.name).join(", ")
                 : "N/A";
             const memberSince = member ? (_b = member.joinedAt) === null || _b === void 0 ? void 0 : _b.toLocaleDateString() : "N/A";
             const presence = member === null || member === void 0 ? void 0 : member.presence;
-            const about = ((_d = (_c = presence === null || presence === void 0 ? void 0 : presence.activities) === null || _c === void 0 ? void 0 : _c.find((activity) => activity.type === discord_js_1.ActivityType.Custom ||
-                activity.type === discord_js_1.ActivityType.Playing)) === null || _d === void 0 ? void 0 : _d.name) || "N/A";
-            const userData = `
-    **User Data**
-    ID: \`${id}\`
-    Name: ${name}
-    Guild Status: ${guildStatus}
-    About: ${about}
-    Roles: ${roles}
-    Member Since: ${memberSince}
-  `;
-            yield interaction.reply(userData);
+            const status = (_c = presence === null || presence === void 0 ? void 0 : presence.status) !== null && _c !== void 0 ? _c : "N/A";
+            const embed = new discord_js_1.EmbedBuilder()
+                .setTitle(name)
+                .setDescription("User description")
+                .setColor("#0099ff")
+                .setThumbnail(user.displayAvatarURL())
+                .addFields([
+                { name: "ID", value: id, inline: true },
+                { name: "Status", value: status, inline: true },
+                { name: "Roles", value: roles, inline: true },
+                { name: "Member Since", value: memberSince, inline: true },
+            ]);
+            yield interaction.reply({ embeds: [embed] });
         }
         catch (error) {
             console.error("Error executing 'id' command:", error);
