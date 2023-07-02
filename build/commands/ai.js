@@ -8,17 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = exports.data = void 0;
-const axios_1 = __importDefault(require("axios"));
-const querystring_1 = __importDefault(require("querystring"));
 const discord_js_1 = require("discord.js");
 const data = new discord_js_1.SlashCommandBuilder()
     .setName("img")
-    .setDescription("Generates AI images.")
+    .setDescription("Replies you with your name.")
     .addStringOption((option) => option
     .setName("prompt")
     .setDescription("Enter your text prompt.")
@@ -34,19 +29,20 @@ function execute(interaction) {
         try {
             if (interaction.isCommand() && interaction.commandName === "img") {
                 const prompt = interaction.options.get("prompt").value;
-                const size = interaction.options.get("size").value;
+                const amount = interaction.options.get("amount").value;
                 try {
-                    const params = querystring_1.default.stringify({ prompt, size });
-                    const response = yield axios_1.default.post("https://ekilox-api.onrender.com/ai/generate/image", params, {
+                    const response = yield fetch("/api/posts", {
+                        method: "POST",
                         headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
+                            "Content-Type": "application/json",
                         },
+                        body: JSON.stringify({ prompt, amount }),
                     });
-                    if (response.status !== 200) {
+                    if (!response.ok) {
                         throw new Error("Failed to create post");
                     }
-                    const responseData = response.data;
-                    yield interaction.reply({ files: [responseData.data] });
+                    const data = yield response.json();
+                    yield interaction.reply({ files: [data.data] });
                 }
                 catch (error) {
                     console.error(error);

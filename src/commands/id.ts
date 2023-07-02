@@ -1,5 +1,4 @@
 import {
-  ActivityType,
   CommandInteraction,
   SlashCommandBuilder,
   EmbedBuilder,
@@ -20,22 +19,20 @@ async function execute(interaction: CommandInteraction) {
     const id = user.id;
     const name = user.username;
     const roles = member
-      ? member.roles.cache.map((role) => role.name).join(", ")
+      ? "- " + member.roles.cache.map((role) => role.name).join("\n- ")
       : "N/A";
+
     const memberSince = member ? member.joinedAt?.toLocaleDateString()! : "N/A";
-    const presence = member?.presence;
-    const status = presence?.status ?? "N/A";
 
     const embed = new EmbedBuilder()
       .setTitle(name)
       .setDescription("User description")
-      .setColor("#0099ff")
+      .setColor("#018574")
       .setThumbnail(user.displayAvatarURL())
       .addFields([
         { name: "ID", value: id, inline: true },
-        { name: "Status", value: status, inline: true }, // TODO improve
-        { name: "Roles", value: roles, inline: true },
         { name: "Member Since", value: memberSince, inline: true },
+        { name: "Roles", value: roles, inline: false },
       ]);
 
     await interaction.reply({ embeds: [embed] });

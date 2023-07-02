@@ -13,13 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createApiRest = void 0;
-const discord_js_1 = require("discord.js");
 const express_1 = __importDefault(require("express"));
+const discord_js_1 = require("discord.js");
 const db_1 = require("./db");
+const openai_1 = require("openai");
+const config_1 = __importDefault(require("./config"));
 function createApiRest(client) {
     const app = (0, express_1.default)();
-    app.use(express_1.default.static('public'));
-    app.use('/public', express_1.default.static(__dirname + '/public'));
+    app.use(express_1.default.static("public"));
+    app.use("/public", express_1.default.static(__dirname + "/public"));
     /* START Thread */
     // GET on endpoint - /message
     app.get("/message/:threadId", (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -105,8 +107,43 @@ function createApiRest(client) {
         }
     }));
     /* END Thread */
-    /* START Web scrapping */
-    /* END Web scrapping */
+    /* START AI image */
+    const configuration = new openai_1.Configuration({
+        apiKey: config_1.default.openai.OPENAI_API_KEY,
+    });
+    const openai = new openai_1.OpenAIApi(configuration);
+    const img = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const response = yield openai.createImage({
+                prompt: "Polar bear on ice skates",
+                n: 1,
+                size: "512x512",
+            });
+            const url = response.data.data[0].url;
+            res.status(200).json({
+                success: true,
+                data: url,
+            });
+        }
+        catch (error) {
+            const errorWithResponse = error;
+            if (errorWithResponse.response) {
+                console.log(errorWithResponse.response.status);
+                console.log(errorWithResponse.response.data);
+            }
+            else if (errorWithResponse.message) {
+                console.log(errorWithResponse.message);
+            }
+            else {
+                console.log('Unknown error occurred');
+            }
+            res.status(400).json({
+                success: false,
+                error: "Image couldn't be generated successfully",
+            });
+        }
+    });
+    /* END AI image */
     return app;
 }
 exports.createApiRest = createApiRest;

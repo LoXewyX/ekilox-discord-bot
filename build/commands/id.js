@@ -17,7 +17,7 @@ const data = new discord_js_1.SlashCommandBuilder()
     .addUserOption((option) => option.setName("user").setDescription("Select the user.").setRequired(true));
 exports.data = data;
 function execute(interaction) {
-    var _a, _b, _c;
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const user = interaction.options.getUser("user");
@@ -25,21 +25,18 @@ function execute(interaction) {
             const id = user.id;
             const name = user.username;
             const roles = member
-                ? member.roles.cache.map((role) => role.name).join(", ")
+                ? "- " + member.roles.cache.map((role) => role.name).join("\n- ")
                 : "N/A";
             const memberSince = member ? (_b = member.joinedAt) === null || _b === void 0 ? void 0 : _b.toLocaleDateString() : "N/A";
-            const presence = member === null || member === void 0 ? void 0 : member.presence;
-            const status = (_c = presence === null || presence === void 0 ? void 0 : presence.status) !== null && _c !== void 0 ? _c : "N/A";
             const embed = new discord_js_1.EmbedBuilder()
                 .setTitle(name)
                 .setDescription("User description")
-                .setColor("#0099ff")
+                .setColor("#018574")
                 .setThumbnail(user.displayAvatarURL())
                 .addFields([
                 { name: "ID", value: id, inline: true },
-                { name: "Status", value: status, inline: true },
-                { name: "Roles", value: roles, inline: true },
                 { name: "Member Since", value: memberSince, inline: true },
+                { name: "Roles", value: roles, inline: false },
             ]);
             yield interaction.reply({ embeds: [embed] });
         }
